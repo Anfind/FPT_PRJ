@@ -187,9 +187,9 @@ class Doubly_LinkedList:
 
         # Swap prev pointers
         if last_prev:
-        last_prev.next = first
+            last_prev.next = first
         if first_next:
-        first_next.prev = last
+            first_next.prev = last
 
         # Swap next pointers
         first.next, last.next = last.next, first_next
@@ -206,18 +206,41 @@ class Doubly_LinkedList:
 
     def f10(self):
         # begin your code here
+        current = self.head
+        prev = None
+        self.tail = self.head
+        while current is not None:
+            next_node = current.next
+            current.next = prev
+            current.prev = next_node
 
-        
+            prev = current
+            current = next_node
+        self.head = prev
         # end your code here
         print("from head to tail:")
         self.show_fw()
         print("\nfrom tail to head:")
         self.show_bw()
 
+    def delNode(self, node):
+        if node.prev:
+            node.prev.next = node.next
+        else:
+            self.head = node.next
+        if node.next:
+            node.next.prev = node.prev
+        else:
+            self.tail = node.prev
+        self.size -= 1
+
     def f11(self):
         # begin your code here
-
-        
+        current_node = self.head
+        while current_node is not None:
+            if current_node.data.price > 15:
+                self.delNode(current_node)    
+            current_node = current_node.next    
         # end your code here
         print("from head to tail:")
         self.show_fw()
