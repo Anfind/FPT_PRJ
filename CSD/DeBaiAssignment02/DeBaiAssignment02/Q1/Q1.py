@@ -22,17 +22,15 @@ class Queue:
     def enQueue(self, name, amount, price):
         # begin your code here
         # goi y: cac em bat dau code bang lenh sau:
-        # newBill = drinkBill(name, amount, price)
-        # sau do code tuong tu nhu ham addLast
         newBill = drinkBill(name, amount, price)
+        # sau do code tuong tu nhu ham addLast
         newNode = Node(newBill)
-
-        if (self.size == 0):
+        if self.head is None:
             self.head = newNode
             self.tail = newNode
         else:
             self.tail.next = newNode
-            self.tail = newNode            
+            self.tail = newNode
         # end your code here
         self.size += 1  # sau khi them du lieu thi tang size
         
@@ -40,13 +38,12 @@ class Queue:
         tmp = None
         # begin your code here
         # goi y: tuong tu nhu ham deleteFirst()
-        if self.size == 0:
-            return None
-        tmp = self.head.data
-        self.head = self.head.next
-        self.size -= 1
-        if self.size == 0:
-            self.tail = None
+        if self.head is not None:
+            tmp = self.head.data
+            self.head = self.head.next
+            if self.head is None:
+                self.tail = None
+            self.size -= 1
         # end your code here
         return tmp
 
@@ -75,82 +72,123 @@ class Queue:
 
     
     def f1(self, name, amount, price):
+        #Thêm dữ liệu vào queue, trong đó, giá trị amount phải nhỏ hơn 5. Nếu amount lớn hơn 5 thì không cần thêm. Không trả về giá trị
         self.showQueue()
         # begin your code here
-        if (amount < 5):
+        if amount < 5:
             self.enQueue(name, amount, price)
         # end your code here
         self.showQueue()
         
     
     def f2(self):
+        #Phục vụ cho khách hàng đầu tiên trong queue, trả về số tiền thu được
         self.showQueue()
         result = 0
         # begin your code here
-        tmp = self.deQueue()  
-        result = tmp.amount * tmp.price      
+        if self.head is not None:
+            first_bill = self.deQueue()
+            result = first_bill.amount * first_bill.price
         # end your code here
         self.showQueue()
         return result
     
     
     def f3(self):
+        #Phục vụ cho 03 khách hàng đầu tiên trong queue, trả về tổng số lượng (amount) thu được
         self.showQueue()
         result = 0
         # begin your code here
-        for i in range(3):
-            result += self.deQueue().amount
+        count = 0
+        while count < 3 and self.head is not None:
+            first_bill = self.deQueue()
+            result += first_bill.amount
+            count += 1
         # end your code here
         self.showQueue()
         return result
     
-    
     def f4(self):
+        #Phục vụ cho tất cả khách hàng trong queue, trả về bill có số tiền thu được lớn nhất (giả sử chỉ có 01 giá trị lớn nhất)
         self.showQueue()
         result = None
         # begin your code here
-        current_node = self.head
-        maxData = 0
-        while self.size > 0:
-            current_bill = self.deQueue()
-            if ((current_bill.amount) * (current_bill.price) > maxData):
-                result = current_bill
-                maxData = (current_bill.amount) * (current_bill.price)
+        max_revenue = 0
+        max_bill = None
+        while self.head is not None:
+            bill = self.deQueue()
+            revenue = bill.amount * bill.price
+            if revenue > max_revenue:
+                max_revenue = revenue
+                max_bill = bill
+        result = max_bill
         # end your code here
         self.showQueue()
-        result.show_info()
+        print("Ket Qua:")
+        max_bill.show_info()
         return result
     
     
     def f5(self):
+        #Giả sử quán chỉ còn tối đa 2 ly CF, hãy phục vụ nhiều khách hàng nhất có thể và tính tổng số tiền thu được
         self.showQueue()
         result = 0
         # begin your code here
-        
+        cf_remaining = 2
+        while self.head is not None:
+            bill = self.deQueue()
+            if bill.name == "CF":
+                if cf_remaining >= bill.amount:
+                    cf_remaining -= bill.amount
+                    result += bill.amount * bill.price
+            else:
+                result += bill.amount * bill.price
         # end your code here
         self.showQueue()
         return result
     
     
     def f6(self):
+        #Phục vụ cho tất cả khách hàng trong queue, trả về món có số lượng được gọi nhiều nhất
         self.showQueue()
-        result = 0
+        result = ""
         # begin your code here
+        drink_count = {}
+        while self.head is not None:
+            bill = self.deQueue()
+            if bill.name in drink_count:
+                drink_count[bill.name] += bill.amount
+            else:
+                drink_count[bill.name] = bill.amount
         
-        
+        max_amount = 0
+        for drink_name, amount in drink_count.items():
+            if amount > max_amount:
+                max_amount = amount
+                result = drink_name
         # end your code here
         self.showQueue()
         return result
     
     
     def f7(self):
+        #Giả sử lượng đá và đường trong quán chỉ còn đủ cho 10 ly, quán sẽ phục vụ cho tối đa bao nhiêu người?
         self.showQueue()
         result = 0
         # begin your code here
-        
-        
+        total_drinks = 10
+        customers_served = 0
+        while self.head is not None and total_drinks > 0:
+            bill = self.deQueue()
+            if bill.amount <= total_drinks:
+                total_drinks -= bill.amount
+                customers_served += 1
+            else:
+                break
+        result = customers_served
         # end your code here
         self.showQueue()
+        
         return result
     
    
@@ -192,8 +230,7 @@ if __name__ == '__main__':
         print(r)
     if (choice == 4):
         r = lst.f4()
-        print("Ket Qua:")
-        print(r)
+        # print(r)
     if (choice == 5):
         r = lst.f5()
         print("Ket Qua:")
